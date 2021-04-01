@@ -78,13 +78,11 @@ public void keyTyped(KeyEvent e) {
 
             //if input equals to words[roll]
             if(strInput.toString().equalsIgnoreCase(fixedWord)){
-                //reset strInput & text field
-                resetInput();
-
                 //roll to next random word
                 gameModel.setCurrentWord1();
                 displayLabel.setForeground(Color.BLACK);
                 displayLabel.setText("Current text is " + gameModel.getWord1());
+
                 check = true;
                 }
             if(wordCheck(fixedWord, strInput) == true)
