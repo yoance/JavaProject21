@@ -1,3 +1,4 @@
+
 public class Logo {
 
     public static enum Code{
@@ -15,6 +16,7 @@ public class Logo {
 
     /**a String representing the name of the logo given in a specific format (see class' constants).*/
     private Code code;
+    private boolean marked = false;
 
     /**
      * Create a logo with the specified code. Use the
@@ -37,4 +39,8 @@ public class Logo {
     public Code getCode() { return code; }
 
     public String getName(){ return code.name(); }
+
+    public void setMark(){ marked = true;}
+
+    public boolean getMark(){ return marked;}
 }

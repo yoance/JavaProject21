@@ -1,4 +1,6 @@
+
 import javax.swing.*;
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
@@ -12,6 +14,8 @@ public class LogoLabel extends JLabel implements Runnable{
     private int logoTimer;
     private JLabel timerLabel = new JLabel();
     private Font timerLabelFont;
+    private boolean isCorrect;
+    private boolean isDone;
 
     {
         try {
@@ -29,39 +33,33 @@ public class LogoLabel extends JLabel implements Runnable{
     @Override
     public void run(){
         logoTimer=10000;
-        //while (logoTimer!=0 && answerField!=this.logoName)
-        while(true)
+        isCorrect = false;
+        isDone = false;
+        this.add(timerLabel);
+        timerLabel.setFont(timerLabelFont);
+        timerLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        timerLabel.setVerticalAlignment(SwingConstants.TOP);
+        while(!isDone)
         {
-            int var = Math.round(logoTimer/1000);
+            int var = Math.round(logoTimer / 1000);
             timerLabel.setText(String.valueOf(var));
-            timerLabel.setFont(timerLabelFont);
-            timerLabel.setSize(var*10,var*10);
-            timerLabel.setHorizontalAlignment(SwingConstants.LEFT);
-            timerLabel.setVerticalAlignment(SwingConstants.TOP);
-            timerLabel.setLocation(var,var);
-            this.add(timerLabel);
-            this.height=((15+var) * 6);
-            this.width=((15+var) * 6);
-            try{ Thread.sleep(1); }
-            catch(Exception e){}
-            logoTimer-=2;
+            timerLabel.setSize(var * 11, var * 11);
+            timerLabel.setLocation(var+1, var+1);
+            this.height = ((15 + var) * 6);
+            this.width = ((15 + var) * 6);
+            try {
+                Thread.sleep(1);
+            } catch (Exception e) {
+            }
+            logoTimer -= 2;
             getParent().repaint();
             getParent().revalidate();
-            //if (logoTimer==0)
-            if(height <= 90){
-                //GAMEPLAY PANEL -> REMOVE LOGO LABEL, IMMEDIATELY REPLACE WITH NEW ONE
-                //Player.timeOut();
-                setVisible(false);
-                //remove setVisible after gameplay panel implementation
+            if (logoTimer==0 || isCorrect) {
+                setIsDone();
                 break;
             }
-            //if (answerField==logoName) [IF ANSWER IS RIGHT]
-            //{
-                //GAMEPLAY PANEL -> REMOVE LOGO LABEL, IMMEDIATELY REPLACE WITH NEW ONE
-                //Player.rightAnswer(logoTimer);
-                //break;
-            //}
-        }       
+        }
+        stop();
     }
 
     public LogoLabel(String fetchedName)
@@ -70,26 +68,38 @@ public class LogoLabel extends JLabel implements Runnable{
         setVisible(true);
         setLayout(new GridLayout(1,1));
         thread.start();
+        isDone = false;
     }
 
     public int getWidth()
     {
         return width;
     }
-
     public void setWidth(int currentWidth)
     {
         width=currentWidth;
     }
-
     public int getHeight()
     {
         return height;
     }
-
     public void setHeight(int currentHeight)
     {
         height=currentHeight;
+    }
+    public void stop(){
+        setVisible(false);
+    }
+    public void setIsDone(){isDone=true;}
+    public void setIsCorrect(){isCorrect=true;}
+    public boolean isDone(){
+        return isDone;
+    }
+    public boolean isCorrect(){
+        return isCorrect;
+    }
+    public int getLogoTimer(){
+        return logoTimer;
     }
 
     @Override
@@ -100,4 +110,7 @@ public class LogoLabel extends JLabel implements Runnable{
         g.drawImage(img.getImage(), 0,0, width,height,null);
     }
 
+    public String getName(){
+        return this.logoName;
+    }
 }

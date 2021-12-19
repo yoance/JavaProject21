@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,9 +8,15 @@ public class GameModel {
     private ArrayList<String> currentWords;
     private Player player;
     private List<Logo> logos; 
+    private String newWord;
+    private int level;
+    public static final int EASY = 2;
+    public static final int MEDIUM = 3;
+    public static final int HARD = 4;
         
 
     public GameModel(int size){
+        level = size;
         player = new Player();
         initializeLogo();
         initializeCurrentWords(size);
@@ -23,6 +30,9 @@ public class GameModel {
         }
     }
 
+    public int getLevel(){
+        return level;
+    }
     /**
      * generate the word and update the current ongoing word on the given index.
      */
@@ -30,36 +40,25 @@ public class GameModel {
         Random randnum = new Random();
         int roll;
         boolean dupe = false;
-
         do{
-            //roll = randnum.nextInt(2);
             roll = randnum.nextInt(logos.size()-1);
             dupe = false;
             for(int i=0; i<currentWords.size(); i++){
-                //if(i!= idx && Character.compare(logos.get(roll).getName().charAt(0), logos.get(i).getName().charAt(0)) == 0){
-                if(i!= idx && logos.get(roll).getName().startsWith(logos.get(i).getName())){
+                if((i!= idx && logos.get(roll).getName().startsWith(currentWords.get(i))) || logos.get(roll).getMark()){
                     dupe = true;
                     break;
                 }    
             }
         }while(dupe==true);
-
-        currentWords.set(idx, logos.get(roll).getName());
+        newWord = logos.get(roll).getName();
+        logos.get(roll).setMark();
+        currentWords.set(idx,newWord);
     }
 
-    public String getWord(int idx){
-        return currentWords.get(idx);
+    public String getNewWord(){
+        return newWord;
     }
 
-    public int increaseScore(){
-        player.setScore(player.getScore()+1);
-        return player.getScore();
-    }
-
-    public int timeOut(){
-        player.setHealthPoints(player.getHealthPoints()+1);
-        return player.getHealthPoints();
-    }
     public Player getPlayer(){
         return player;
     }
@@ -67,7 +66,33 @@ public class GameModel {
     public ArrayList<String> getCurrentWordList(){
         return currentWords;
     }
-    
+
+    public boolean checkAnswer(String ans){
+        for(int i=0; i<currentWords.size(); i++){
+            if(currentWords.get(i).toUpperCase().startsWith(ans.toUpperCase())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean finalAnswer(String ans){
+        for(int i=0; i<(currentWords.size()); i++){
+            if(currentWords.get(i).equalsIgnoreCase(ans)){
+                //stop animasi & set current correct word
+                generateWord(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void rightAnswer(int logoTimer)
+    {
+        player.setScore(player.getScore()+logoTimer);
+        player.setAmountSolved();
+    }
+
     public void initializeLogo(){
         logos = new ArrayList<Logo>();
         //add logo to the list
@@ -114,7 +139,7 @@ public class GameModel {
         logos.add(new Logo(Logo.Code.XBOX)); logos.add(new Logo(Logo.Code.XEROX)); logos.add(new Logo(Logo.Code.YELP)); 
         logos.add(new Logo(Logo.Code.YOUTUBE)); logos.add(new Logo(Logo.Code.ZOOM));
 
-        //random the logo position on the list
+        //randomize the logo position on the list
         Collections.shuffle(logos, new Random(System.currentTimeMillis()));
     }
 

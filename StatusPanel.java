@@ -1,12 +1,10 @@
+
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.*;
 
 public class StatusPanel extends JPanel{
-    public static int getLives;
-    public static int getScore;
-    public static int getSolvedAmt;
     private int lives;
     private int score;
     private int solvedAmt;
@@ -15,7 +13,7 @@ public class StatusPanel extends JPanel{
     private JLabel scoreLabel;
     private Font statusLabelFont;
 
-    public StatusPanel(Player player, int amountSolved)
+    public StatusPanel(Player player)
     {
         try {
             statusLabelFont = Font.createFont(Font.TRUETYPE_FONT,new File("res/FONTS/Adagio.ttf")).deriveFont(25f);
@@ -31,21 +29,20 @@ public class StatusPanel extends JPanel{
         setOpaque(true);
         setBackground(new Color(214,188,248));
 
-        lives = player.getHealthPoints();
+        lives = player.getLives();
         score = player.getScore();
-        solvedAmt=amountSolved;
+        solvedAmt = player.getAmountSolved();
 
         livesLabel = new JLabel();
-        //livesLabel.setBorder(new LineBorder(Color.RED));
         livesLabel.setText("Lives: " + lives);
-        livesLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        livesLabel.setHorizontalAlignment(SwingConstants.CENTER);
         livesLabel.setVerticalAlignment(SwingConstants.CENTER);
         livesLabel.setForeground(Color.BLACK);
         livesLabel.setFont(statusLabelFont);
         this.add(livesLabel);
 
         scoreLabel = new JLabel();
-        scoreLabel.setText(String.valueOf(score));
+        scoreLabel.setText("Score: " + score);
         scoreLabel.setHorizontalAlignment(SwingConstants.CENTER);
         scoreLabel.setVerticalAlignment(SwingConstants.CENTER);
         scoreLabel.setFont(statusLabelFont);
@@ -55,31 +52,20 @@ public class StatusPanel extends JPanel{
         
         solvedLabel = new JLabel();
         solvedLabel.setText("Solved: " + solvedAmt);
-        solvedLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        solvedLabel.setHorizontalAlignment(SwingConstants.CENTER);
         solvedLabel.setVerticalAlignment(SwingConstants.CENTER);
         solvedLabel.setFont(statusLabelFont);
         this.add(solvedLabel);
     }
 
-    /*public void timeOut()
+    public void update(int lives)
     {
-        setLives(getLives()-1);
-    }*/
-
-    public void rightAnswer(LogoLabel runningLogo)
-    {
-    //    setScore(getScore()+(1000*[OBJECT TIMER]));
-        setSolvedAmt(getSolvedAmt()+1);
+        livesLabel.setText("Lives: " + lives);
     }
 
-    public int getSolvedAmt()
+    public void update(int score, int amountSolved)
     {
-        return solvedAmt;
+        scoreLabel.setText("Score: " + score);
+        solvedLabel.setText("Solved: " + amountSolved);
     }
-
-    public void setSolvedAmt(int amountSolved)
-    {
-        solvedAmt=amountSolved;
-    }
-
 }
